@@ -1,31 +1,25 @@
-# Sinatra Faye Example
-
-Where Ruby Sinatra API meets Javascript Faye WebSockets
-
-This is an example of using [Sinatra](http://www.sinatrarb.com) and [Faye](http://faye.jcoglan.com) together. Sinatra accepts a POST request and then publishes that message out to all connected clients (who have subscribed to certain channels). It also saves the data for future clients that connect.
-
-Note that although you can use Faye on the client to publish a message rather than send a POST request, this example was specifically designed to show how an API call to a Sinatra app can update all frontend Javascript clients.
-
-Try sending a message to a channel to see it update without any reloading of the browser. Open this web page in multiple tabs in your browser to see all clients update simultaneously.
+# Faye Rack Example using puma adapter
 
 ## Installation
 
 ```
-git clone git@github.com:eterry1388/sinatra-faye-example.git
+clone
 cd sinatra-faye-example
 bundle install
 ```
 
-## Usage
+## Usage, start server
 
 ```
-bundle exec rackup -s thin -E production
+cd sinatra-faye-example
+puma
 ```
 
-Then visit [http://localhost:9292](http://localhost:9292) in your browser.
+## Open the file faye_client.html, and test using curl.
 
-![Screenshot](sinatra-faye-example.png?raw=true)
+## Use curl commands to post from console:
 
-## License
-
-This repository is available as open source under the terms of the MIT License.
+```
+curl -X POST http://localhost:9292/faye -H 'Content-Type: application/json' -d '{"channel": "/green", "data": "You said green", "ext": {"password": "..."}}'
+curl -X POST http://localhost:9292/faye -H 'Content-Type: application/json' -d '{"channel": "/blue", "data": "You said blue", "ext": {"password": "..."}}'
+```

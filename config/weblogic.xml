@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<weblogic-web-app xmlns="http://www.bea.com/ns/weblogic/weblogic-web-app">
+  <container-descriptor>
+    <prefer-web-inf-classes>false</prefer-web-inf-classes>
+    <prefer-application-packages>
+      <package-name>org.joda.*</package-name>
+      <package-name>org.jruby.*</package-name>
+    </prefer-application-packages>
+    <show-archived-real-path-enabled>true</show-archived-real-path-enabled>
+  </container-descriptor>
+</weblogic-web-app>
