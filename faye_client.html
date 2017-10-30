@@ -1,84 +1,68 @@
+
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>Faye Rack</title>
-    <link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
-     <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
-    <script type="text/javascript" src="http://localhost:9292/faye/client.js"></script>
+<meta charset="utf-8" />
+<title>WebSocket Test</title>
+<script language="javascript" type="text/javascript">
 
-    <script type="text/javascript">
-      var faye_client = new Faye.Client( 'http://localhost:9292/faye' );
+var wsUri = 'ws://mev-dev.onesynq.com:7001/faye/ws';
+var output;
 
-      faye_client.subscribe( '/blue', function( data ) {
-        console.log(data);
-        var div = $( 'ul#blue-messages' ).append( '<li>' + data + '</li>' );
-      });
+function init()
+{
+  output = document.getElementById("output");
+  testWebSocket();
+}
 
-      faye_client.subscribe( '/green', function( data ) {
-        var div = $( 'ul#green-messages' ).append( '<li>' + data + '</li>' );
-      });
+function testWebSocket()
+{
+  websocket = new WebSocket(wsUri);
+  websocket.onopen = function(evt) { onOpen(evt) };
+  websocket.onclose = function(evt) { onClose(evt) };
+  websocket.onmessage = function(evt) { onMessage(evt) };
+  websocket.onerror = function(evt) { onError(evt) };
+}
 
-      faye_client.subscribe( '/red', function( data ) {
-        console.log(data);
-        var div = $( 'ul#red-messages' ).append( '<li>' + data + '</li>' );
-      });
+function onOpen(evt)
+{
+  writeToScreen("CONNECTED");
+  doSend("WebSocket rocks");
+}
 
-      faye_client.subscribe( '/yellow', function( data ) {
-        console.log(data);
-        var div = $( 'ul#yellow-messages' ).append( '<li>' + data + '</li>' );
-      });
-    </script>
-  </head>
+function onClose(evt)
+{
+  writeToScreen("DISCONNECTED");
+}
 
-  <body>
-    <div class="container">
-      <div class="row">
-        <div class="col-md-3">
-          <div class="panel panel-info">
-            <div class="panel-heading">Blue messages</div>
-            <div class="panel-body">
-              <ul id="blue-messages">
-              </ul>
-            </div>
-          </div>
-        </div>
+function onMessage(evt)
+{
+  writeToScreen('<span style="color: blue;">RESPONSE: ' + evt.data+'</span>');
+  websocket.close();
+}
 
-        <div class="col-md-3">
-          <div class="panel panel-success">
-            <div class="panel-heading">Green messages</div>
-            <div class="panel-body">
-              <ul id="green-messages">
-              </ul>
-            </div>
-          </div>
-        </div>
+function onError(evt)
+{
+  writeToScreen('<span style="color: red;">ERROR:</span> ' + evt.data);
+}
 
-        <div class="col-md-3">
-          <div class="panel panel-danger">
-            <div class="panel-heading">Red messages</div>
-            <div class="panel-body">
-              <ul id="red-messages">
-              </ul>
-            </div>
-          </div>
-        </div>
+function doSend(message)
+{
+  writeToScreen("SENT: " + message);
+  websocket.send(message);
+}
 
-        <div class="col-md-3">
-          <div class="panel panel-warning">
-            <div class="panel-heading">Yellow messages</div>
-            <div class="panel-body">
-              <ul id="yellow-messages">
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-      <h3>Test From Console</h3>
-      <pre>
-        curl -X POST http://localhost:9292/faye -H 'Content-Type: application/json' -d '{"channel": "/green", "data": "You said green", "ext": {"password": "..."}}'
-        curl -X POST http://localhost:9292/faye -H 'Content-Type: application/json' -d '{"channel": "/blue", "data": "You said blue", "ext": {"password": "..."}}'
-      </pre>
+function writeToScreen(message)
+{
+  var pre = document.createElement("p");
+  pre.style.wordWrap = "break-word";
+  pre.innerHTML = message;
+  output.appendChild(pre);
+}
 
-    </div>
-  </body>
-</html>
+window.addEventListener("load", init, false);
+
+</script>
+
+<h2>WebSocket Test</h2>
+
+<div id="output"></div>
+        
